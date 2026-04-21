@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: medilearn-monitor
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: medilearn
+  namespaceSelector:
+    matchNames:
+      - default   # 🔥 FIXED
+  endpoints:
+    - port: http
+      path: /api/metrics
+      interval: 15s

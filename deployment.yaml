@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: medilearn-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: medilearn
+  template:
+    metadata:
+      labels:
+        app: medilearn
+    spec:
+      containers:
+      - name: medilearn
+        image: mukuld86/medilearn-ai:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+
+        env:
+        - name: MONGODB_URI
+          value: "mongodb+srv://..."
+        - name: MONGODB_DB_NAME
+          value: "medilearn"
+
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 20
